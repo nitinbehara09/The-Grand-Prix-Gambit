@@ -4,6 +4,8 @@
 
 library(plotly)
 library(dplyr)
+library(reactable)
+library(htmltools)
 
 detect_undercuts <- function(lap_data, pit_data) {
   
@@ -89,75 +91,90 @@ detect_undercuts <- function(lap_data, pit_data) {
 plot_undercut_table <- function(undercut_data) {
   
   if (is.null(undercut_data) || nrow(undercut_data) == 0) {
-    return(
-      plotly::plot_ly() %>%
-        plotly::layout(
-          title        = list(text = "No undercut attempts detected in this race",
-                              font = list(size = 14, family = "Helvetica Neue")),
-          paper_bgcolor = "#ffffff"
-        )
-    )
+    return(reactable(
+      data.frame(Message = "No undercut attempts detected in this race"),
+      sortable = FALSE,
+      defaultColDef = colDef(align = "center", vAlign = "center")
+    ))
   }
   
   undercut_data <- undercut_data %>%
     mutate(
       initiator_name = ifelse(initiator %in% names(DRIVER_NAMES), DRIVER_NAMES[initiator], initiator),
       target_name    = ifelse(target    %in% names(DRIVER_NAMES), DRIVER_NAMES[target],    target),
-      result_label   = ifelse(success, "&#10003;&nbsp;SUCCESS", "&#10007;&nbsp;FAILED"),
-      result_colour  = ifelse(success, "#d4edda",    "#f8d7da")
-    )
-  
-  n <- nrow(undercut_data)
-  # Wrap in <br> padding to force vertical centering in plotly table cells
-  bc <- function(x) paste0("<br><b>", x, "</b><br>")
-  
-  plotly::plot_ly(
-    type        = "table",
-    columnwidth = c(185, 185, 72, 120, 72, 80, 80, 115),
-    header = list(
-      values = c(
-        "<b>Initiator</b>",
-        "<b>Target</b>",
-        "<b>Pit Lap</b>",
-        "<b>Target Pit Lap</b>",
-        "<b>Gap (laps)</b>",
-        "<b>Pos Before</b>",
-        "<b>Pos After</b>",
-        "<b>Result</b>"
-      ),
-      fill   = list(color = "#1a1a1a"),
-      font   = list(color = "white", size = 11, family = "Helvetica Neue"),
-      align  = rep("center", 8),
-      height = 44
-    ),
-    cells = list(
-      values = list(
-        bc(undercut_data$initiator_name),
-        bc(undercut_data$target_name),
-        bc(undercut_data$pit_lap),
-        bc(undercut_data$target_pit_lap),
-        bc(undercut_data$gap_laps),
-        bc(undercut_data$pos_before),
-        bc(undercut_data$pos_after),
-        bc(undercut_data$result_label)
-      ),
-      fill = list(color = list(
-        rep("#fafafa", n), rep("#fafafa", n),
-        rep("#fafafa", n), rep("#fafafa", n),
-        rep("#fafafa", n), rep("#fafafa", n),
-        rep("#fafafa", n), undercut_data$result_colour
-      )),
-      font   = list(size = 11, family = "Helvetica Neue", color = "#1a1a1a"),
-      align  = rep("center", 8),
-      height = 52,
-      line   = list(color = "#e0e0e0", width = 1)
-    )
-  ) %>%
-    plotly::layout(
-      margin        = list(l = 10, r = 10, t = 10, b = 10),
-      paper_bgcolor = "#ffffff"
+      result_label   = ifelse(success, "\u2713 SUCCESS", "\u2717 FAILED")
     ) %>%
-    plotly::config(displayModeBar = FALSE)
+    select(initiator_name, target_name, pit_lap, target_pit_lap,
+           gap_laps, pos_before, pos_after, result_label, success)
+  
+  centre_style <- list(
+    display        = "flex",
+    alignItems     = "center",
+    justifyContent = "center",
+    height         = "100%",
+    fontFamily     = "Helvetica Neue",
+    fontSize       = "12px",
+    fontWeight     = "bold",
+    color          = "#1a1a1a"
+  )
+  
+  header_style <- list(
+    background     = "#1a1a1a",
+    color          = "white",
+    fontFamily     = "Helvetica Neue",
+    fontSize       = "11px",
+    fontWeight     = "bold",
+    textAlign      = "center",
+    display        = "flex",
+    alignItems     = "center",
+    justifyContent = "center",
+    height         = "50px"
+  )
+  
+  centre_def <- function(name, minWidth = 70) {
+    colDef(
+      name        = name,
+      align       = "center",
+      vAlign      = "center",
+      headerStyle = header_style,
+      style       = centre_style,
+      minWidth    = minWidth
+    )
+  }
+  
+  reactable(
+    undercut_data,
+    columns = list(
+      initiator_name = centre_def("Initiator",      minWidth = 95),
+      target_name    = centre_def("Target",         minWidth = 95),
+      pit_lap        = centre_def("Pit Lap",        minWidth = 55),
+      target_pit_lap = centre_def("Target Pit Lap", minWidth = 80),
+      gap_laps       = centre_def("Gap (laps)",     minWidth = 65),
+      pos_before     = centre_def("Pos Before",     minWidth = 65),
+      pos_after      = centre_def("Pos After",      minWidth = 65),
+      result_label   = colDef(
+        name        = "Result",
+        align       = "center",
+        vAlign      = "center",
+        headerStyle = header_style,
+        minWidth    = 90,
+        style = function(value, index) {
+          bg <- if (undercut_data$success[index]) "#d4edda" else "#f8d7da"
+          c(centre_style, list(background = bg))
+        }
+      ),
+      success = colDef(show = FALSE)
+    ),
+    defaultColDef = colDef(align = "center", vAlign = "center"),
+    rowStyle      = list(height = "52px"),
+    bordered      = TRUE,
+    highlight     = TRUE,
+    compact       = TRUE,
+    pagination    = FALSE,
+    height        = 500,
+    fullWidth     = TRUE,
+    style         = list(fontFamily = "Helvetica Neue", border = "none", width = "100%")
+  )
 }
 
 plot_undercut_bar <- function(undercut_data) {

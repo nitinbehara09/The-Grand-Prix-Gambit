@@ -326,7 +326,7 @@ ui <- navbarPage(
                                  div(class="plot-panel", style="height:100%; box-sizing:border-box;",
                                      h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;","Undercut Attempts Table"),
                                      hr(class="f1-divider"),
-                                     withSpinner(plotlyOutput("undercut_table_plot", height="500px"),
+                                     withSpinner(reactable::reactableOutput("undercut_table_plot", height="500px"),
                                                  type=4, color="#e10600", size=0.7)
                                  )
                         ),
@@ -580,10 +580,10 @@ server <- function(input, output, session) {
     req(input$sm_round)
     laps <- sm_lap_data()
     pits <- sm_pit_data()
-    req(!is.null(laps), !is.null(pits), nrow(laps) > 0)
+    
     plot_strategy_map(laps, pits, input$sm_drivers,
                       season = input$sm_season, round = input$sm_round)
-  })
+  }) %>% bindCache(input$sm_season, input$sm_round, input$sm_drivers)
   
   # ── Panel 2 ──────────────────────────────────────────────────────────────
   ud_lap_data <- reactive({
@@ -639,7 +639,7 @@ server <- function(input, output, session) {
   
   output$ud_belgian_warning <- renderUI({ NULL })
   
-  output$undercut_table_plot <- renderPlotly({
+  output$undercut_table_plot <- reactable::renderReactable({
     if (is_belgian_2021_ud()) return(belgian_warning_plot())
     plot_undercut_table(ud_undercuts())
   })
