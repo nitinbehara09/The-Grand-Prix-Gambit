@@ -538,12 +538,6 @@ ui <- navbarPage(
 ) # /navbarPage
 
 
-# ── PRE-LOAD default race data at app startup (global — runs once, not per session) ──
-message("Pre-loading 2023 Round 1 data...")
-.preload_laps <- tryCatch(get_lap_data_cached(2023, 1), error = function(e) NULL)
-.preload_pits <- tryCatch(get_pitstop_data_cached(2023, 1), error = function(e) NULL)
-message("Pre-load complete.")
-
 # ── SERVER ────────────────────────────────────────────────────────────────────
 server <- function(input, output, session) {
   
@@ -569,37 +563,27 @@ server <- function(input, output, session) {
   })
   
   # ── Panel 1 ──────────────────────────────────────────────────────────────
-  sm_round_val <- reactive({
-    if (is.null(input$sm_round) || !nzchar(as.character(input$sm_round))) 1L
-    else as.numeric(input$sm_round)
-  })
-  
+  # ── Panel 1 ──────────────────────────────────────────────────────────────
   sm_lap_data <- reactive({
-    req(input$sm_season)
-    r <- sm_round_val()
-    if (as.numeric(input$sm_season) == 2023 && r == 1 && !is.null(.preload_laps))
-      return(.preload_laps)
-    tryCatch(get_lap_data_cached(as.numeric(input$sm_season), r),
+    req(input$sm_season, input$sm_round)
+    tryCatch(get_lap_data_cached(as.numeric(input$sm_season), as.numeric(input$sm_round)),
              error = function(e) NULL)
   })
   
   sm_pit_data <- reactive({
-    req(input$sm_season)
-    r <- sm_round_val()
-    if (as.numeric(input$sm_season) == 2023 && r == 1 && !is.null(.preload_pits))
-      return(.preload_pits)
-    tryCatch(get_pitstop_data_cached(as.numeric(input$sm_season), r),
+    req(input$sm_season, input$sm_round)
+    tryCatch(get_pitstop_data_cached(as.numeric(input$sm_season), as.numeric(input$sm_round)),
              error = function(e) NULL)
   })
   
   output$strategy_map_plot <- renderPlotly({
+    req(input$sm_round)
     laps <- sm_lap_data()
     pits <- sm_pit_data()
     req(!is.null(laps), !is.null(pits), nrow(laps) > 0)
     plot_strategy_map(laps, pits, input$sm_drivers,
-                      season = input$sm_season, round = sm_round_val())
+                      season = input$sm_season, round = input$sm_round)
   })
-  outputOptions(output, "strategy_map_plot", suspendWhenHidden = FALSE)
   
   # ── Panel 2 ──────────────────────────────────────────────────────────────
   ud_lap_data <- reactive({
@@ -633,32 +617,35 @@ server <- function(input, output, session) {
         yaxis = list(visible = FALSE, fixedrange = TRUE),
         annotations = list(list(
           text = paste0(
-            "<b>\u26a0\ufe0f  2021 Belgian Grand Prix \u2014 Race Never Started</b><br><br>",
+            "<b>\u26a0\ufe0f  2021 Belgian GP \u2014 Race Never Started</b><br><br>",
             "Only 3 laps were completed behind the Safety Car<br>",
-            "due to heavy rain and wet track conditions.<br><br>",
-            "No strategy data is available for this event."
+            "due to heavy rain. No strategy data available."
           ),
           x = 0.5, y = 0.5, xref = "paper", yref = "paper",
           xanchor = "center", yanchor = "middle", showarrow = FALSE,
-          font = list(size = 13, color = "#856404", family = "Helvetica Neue"),
+          font = list(size = 12, color = "#856404", family = "Helvetica Neue"),
           bgcolor = "#fff3cd", bordercolor = "#e10600",
-          borderpad = 16, borderwidth = 1.5
+          borderpad = 14, borderwidth = 1.5,
+          width = 280
         ))
       ) %>%
       plotly::config(displayModeBar = FALSE)
   }
   
-  output$undercut_table_plot <- renderPlotly({
-    is_belgian_2021 <- !is.null(input$ud_season) && !is.null(input$ud_round) &&
+  is_belgian_2021_ud <- reactive({
+    !is.null(input$ud_season) && !is.null(input$ud_round) &&
       as.numeric(input$ud_season) == 2021 && as.numeric(input$ud_round) == 12
-    if (is_belgian_2021) return(belgian_warning_plot())
+  })
+  
+  output$ud_belgian_warning <- renderUI({ NULL })
+  
+  output$undercut_table_plot <- renderPlotly({
+    if (is_belgian_2021_ud()) return(belgian_warning_plot())
     plot_undercut_table(ud_undercuts())
   })
   
   output$undercut_bar_plot <- renderPlotly({
-    is_belgian_2021 <- !is.null(input$ud_season) && !is.null(input$ud_round) &&
-      as.numeric(input$ud_season) == 2021 && as.numeric(input$ud_round) == 12
-    if (is_belgian_2021) return(belgian_warning_plot())
+    if (is_belgian_2021_ud()) return(belgian_warning_plot())
     plot_undercut_bar(ud_undercuts())
   })
   
