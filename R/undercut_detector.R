@@ -196,19 +196,13 @@ plot_undercut_bar <- function(undercut_data) {
     text        = ~paste0("<b>", successes, "/", attempts, "</b>"),
     textposition = "outside",
     marker = list(
-      color     = ~success_rate,
-      colorscale = list(
-        list(0,   "#e10600"),
-        list(0.5, "#FFC906"),
-        list(1,   "#43b649")
-      ),
-      showscale = FALSE,
-      line      = list(color = "#ffffff", width = 0.5)
+      color = ~ifelse(success_rate == 100, "#43b649",
+                      ifelse(success_rate == 0,  "#e10600", "#FFC906")),
+      line  = list(color = "#ffffff", width = 0.5)
     ),
     hovertemplate = paste0(
       "<b>%{y}</b><br>Success rate: %{x}%<br>%{text} attempts<extra></extra>"
     ),
-    # Bold outside bar labels (e.g. "2/2")
     textfont = list(size = 11, family = "Helvetica Neue", color = "#1a1a1a",
                     weight = "bold")
   ) %>%
