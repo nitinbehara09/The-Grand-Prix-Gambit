@@ -108,14 +108,13 @@ plot_undercut_table <- function(undercut_data) {
     )
   
   n <- nrow(undercut_data)
-  b <- function(x) paste0("<b>", x, "</b>")
+  # Wrap in <br> padding to force vertical centering in plotly table cells
+  bc <- function(x) paste0("<br><b>", x, "</b><br>")
   
   plotly::plot_ly(
     type        = "table",
-    # Wider columns so nothing wraps; single-line headers need less height
-    columnwidth = c(155, 165, 75, 125, 82, 88, 88, 120),
+    columnwidth = c(185, 185, 72, 120, 72, 80, 80, 115),
     header = list(
-      # All headers single-line — no <br> tags
       values = c(
         "<b>Initiator</b>",
         "<b>Target</b>",
@@ -129,18 +128,18 @@ plot_undercut_table <- function(undercut_data) {
       fill   = list(color = "#1a1a1a"),
       font   = list(color = "white", size = 11, family = "Helvetica Neue"),
       align  = rep("center", 8),
-      height = 38
+      height = 44
     ),
     cells = list(
       values = list(
-        b(undercut_data$initiator_name),
-        b(undercut_data$target_name),
-        b(undercut_data$pit_lap),
-        b(undercut_data$target_pit_lap),
-        b(undercut_data$gap_laps),
-        b(undercut_data$pos_before),
-        b(undercut_data$pos_after),
-        b(undercut_data$result_label)
+        bc(undercut_data$initiator_name),
+        bc(undercut_data$target_name),
+        bc(undercut_data$pit_lap),
+        bc(undercut_data$target_pit_lap),
+        bc(undercut_data$gap_laps),
+        bc(undercut_data$pos_before),
+        bc(undercut_data$pos_after),
+        bc(undercut_data$result_label)
       ),
       fill = list(color = list(
         rep("#fafafa", n), rep("#fafafa", n),
@@ -150,7 +149,7 @@ plot_undercut_table <- function(undercut_data) {
       )),
       font   = list(size = 11, family = "Helvetica Neue", color = "#1a1a1a"),
       align  = rep("center", 8),
-      height = 40,   # taller rows → text sits vertically centred
+      height = 52,
       line   = list(color = "#e0e0e0", width = 1)
     )
   ) %>%

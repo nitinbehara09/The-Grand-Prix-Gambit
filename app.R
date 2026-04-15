@@ -311,33 +311,33 @@ ui <- navbarPage(
            div(style = "padding: 20px;",
                div(class="panel-label","Panel 2 \u2014 The Weapon Explained"),
                div(class="panel-title","Undercut Detector"),
-               fluidRow(
-                 column(2,
-                        div(class="control-panel",
-                            h5("Filters"),
-                            selectInput("ud_season","Season", choices=c("2021","2022","2023"), selected="2023"),
-                            uiOutput("ud_race_selector"),
-                            radioButtons("ud_result","Result",
-                                         choices=c("All"="all","Success"="success","Failed"="failed"),
-                                         selected="all")
+               tags$div(style="display:flex; align-items:stretch;",
+                        tags$div(style="width:17%; padding-right:15px; box-sizing:border-box;",
+                                 div(class="control-panel", style="height:100%; box-sizing:border-box;",
+                                     h5("Filters"),
+                                     selectInput("ud_season","Season", choices=c("2021","2022","2023"), selected="2023"),
+                                     uiOutput("ud_race_selector"),
+                                     radioButtons("ud_result","Result",
+                                                  choices=c("All"="all","Success"="success","Failed"="failed"),
+                                                  selected="all")
+                                 )
+                        ),
+                        tags$div(style="width:54%; padding-right:15px; box-sizing:border-box;",
+                                 div(class="plot-panel", style="height:100%; box-sizing:border-box;",
+                                     h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;","Undercut Attempts Table"),
+                                     hr(class="f1-divider"),
+                                     withSpinner(plotlyOutput("undercut_table_plot", height="500px"),
+                                                 type=4, color="#e10600", size=0.7)
+                                 )
+                        ),
+                        tags$div(style="width:29%; box-sizing:border-box;",
+                                 div(class="plot-panel", style="height:100%; box-sizing:border-box;",
+                                     h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;","Success Rate by Driver"),
+                                     hr(class="f1-divider"),
+                                     withSpinner(plotlyOutput("undercut_bar_plot", height="500px"),
+                                                 type=4, color="#e10600", size=0.7)
+                                 )
                         )
-                 ),
-                 column(5,
-                        div(class="plot-panel",
-                            h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;","Undercut Attempts Table"),
-                            hr(class="f1-divider"),
-                            withSpinner(plotlyOutput("undercut_table_plot", height="500px"),
-                                        type=4, color="#e10600", size=0.7)
-                        )
-                 ),
-                 column(5,
-                        div(class="plot-panel",
-                            h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;","Success Rate by Driver"),
-                            hr(class="f1-divider"),
-                            withSpinner(plotlyOutput("undercut_bar_plot", height="500px"),
-                                        type=4, color="#e10600", size=0.7)
-                        )
-                 )
                ),
                div(class="footer-ids","DATA SENTINELS \u00b7 z5715590 \u00b7 z5704763")
            )
@@ -509,7 +509,7 @@ ui <- navbarPage(
                             div(class="panel-title", style="font-size:16px;text-transform:uppercase;", "Worked Example \u2014 2023 Bahrain GP"),
                             hr(class="f1-divider"),
                             div(style="font-size:12px;color:#666;margin-bottom:15px;",
-                                "Verstappen vs Sargeant \u2014 same race, very different strategic outcomes."),
+                                "Verstappen vs Sargeant \u2014 Same race, very different strategic outcomes."),
                             div(style="display:inline-flex;align-items:center;gap:16px;border:1px solid #1a1a1a;padding:5px 12px;background:#fff;margin-bottom:10px;font-size:12px;font-family:'Helvetica Neue',sans-serif;",
                                 tags$span(style="font-weight:700;margin-right:4px;","Component"),
                                 tags$span(
