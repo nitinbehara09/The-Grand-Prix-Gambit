@@ -27,9 +27,12 @@ ui <- navbarPage(
     .navbar .navbar-brand { color: #ffffff !important; font-weight: 700; }
     .navbar .navbar-nav > li > a { color: #cccccc !important; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
     .navbar .navbar-nav > .active > a { color: #ffffff !important; border-bottom: 2px solid #e10600; background: transparent !important; }
-    .stat-box { background: #fff; border: 1px solid #e0e0e0; padding: 20px; text-align: center; margin-bottom: 15px; min-height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .stat-box { background: #fff; border: 1px solid #1a1a1a; padding: 20px; text-align: center; margin-bottom: 15px; min-height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .stat-box .stat-number { font-size: 28px; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
     .stat-box .stat-label { font-size: 11px; font-weight: 700; color: #999; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 6px; }
+    .stat-box-red { background: #fff; border: 2px solid #f5a0a0; padding: 20px; text-align: center; margin-bottom: 15px; min-height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .stat-box-red .stat-number { font-size: 28px; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
+    .stat-box-red .stat-label { font-size: 11px; font-weight: 700; color: #999; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 6px; }
     .panel-label { font-size: 11px; color: #999; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
     .panel-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; }
     .panel-subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
@@ -75,12 +78,12 @@ ui <- navbarPage(
              ),
              div(style = "padding: 0 20px;",
                  fluidRow(
-                   column(2, div(class="stat-box", div(class="stat-number","64"),      div(class="stat-label","Races Analyzed"))),
-                   column(2, div(class="stat-box", div(class="stat-number","2.4"),     div(class="stat-label","Avg Stops / Race"))),
-                   column(2, div(class="stat-box", div(class="stat-number","72.4"),    div(class="stat-label","Avg Strategy Score"))),
-                   column(2, div(class="stat-box", div(class="stat-number","10"),      div(class="stat-label","Teams Covered"))),
-                   column(2, div(class="stat-box", div(class="stat-number","3"),       div(class="stat-label","Seasons"))),
-                   column(2, div(class="stat-box", div(class="stat-number","2021-23"), div(class="stat-label","Era")))
+                   column(2, div(class="stat-box-red", div(class="stat-number","64"),      div(class="stat-label","Races Analyzed"))),
+                   column(2, div(class="stat-box-red", div(class="stat-number","2.4"),     div(class="stat-label","Avg Stops / Race"))),
+                   column(2, div(class="stat-box-red", div(class="stat-number","72.4"),    div(class="stat-label","Avg Strategy Score"))),
+                   column(2, div(class="stat-box-red", div(class="stat-number","10"),      div(class="stat-label","Teams Covered"))),
+                   column(2, div(class="stat-box-red", div(class="stat-number","3"),       div(class="stat-label","Seasons"))),
+                   column(2, div(class="stat-box-red", div(class="stat-number","2021-23"), div(class="stat-label","Era")))
                  ),
                  
                  tags$div(style = "margin-bottom: 15px;",
@@ -439,12 +442,11 @@ ui <- navbarPage(
                    "Each race, every driver is scored out of 100 based on the decisions their team made and not the result."
                ),
                
-               # Component cards
                fluidRow(
                  column(4,
                         div(class="component-card",
                             div(style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:6px;","Component 1"),
-                            div(style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px;","Stop Efficiency"),
+                            div(style="font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:6px;text-transform:uppercase;","Stop Efficiency"),
                             div(style="font-size:32px;font-weight:700;color:#e10600;margin-bottom:8px;","40 pts"),
                             div(style="font-size:13px;color:#555;line-height:1.6;",
                                 "Full marks if you matched the minimum stops in the race. ",
@@ -455,7 +457,7 @@ ui <- navbarPage(
                  column(4,
                         div(class="component-card",
                             div(style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:6px;","Component 2"),
-                            div(style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px;","SC Utilisation"),
+                            div(style="font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:6px;text-transform:uppercase;","SC Utilisation"),
                             div(style="font-size:32px;font-weight:700;color:#e10600;margin-bottom:8px;","35 pts"),
                             div(style="font-size:13px;color:#555;line-height:1.6;",
                                 "Points awarded proportionally based on how many safety car windows the team used to pit. ",
@@ -466,7 +468,7 @@ ui <- navbarPage(
                  column(4,
                         div(class="component-card",
                             div(style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:6px;","Component 3"),
-                            div(style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px;","Tyre Strategy"),
+                            div(style="font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:6px;text-transform:uppercase;","Tyre Strategy"),
                             div(style="font-size:32px;font-weight:700;color:#e10600;margin-bottom:8px;","25 pts"),
                             div(style="font-size:13px;color:#555;line-height:1.6;",
                                 "Rewards drivers who ran more laps on harder compounds (Medium/Hard). ",
@@ -476,40 +478,53 @@ ui <- navbarPage(
                  )
                ),
                
-               # Live calculator
-               fluidRow(
-                 column(5,
-                        div(class="control-panel", style="margin-bottom:15px;",
-                            h5("Live Score Calculator"),
-                            div(style="font-size:11px;color:#888;margin-bottom:15px;",
-                                "Adjust the inputs to see how a strategy would be scored."),
-                            sliderInput("calc_stops","Number of Pit Stops", min=1, max=4, value=2, step=1),
-                            sliderInput("calc_min_stops","Minimum Stops in Race", min=1, max=4, value=2, step=1),
-                            sliderInput("calc_sc_hit","SC Windows Used (out of total)", min=0, max=3, value=1, step=1),
-                            sliderInput("calc_sc_total","Total SC Windows in Race", min=0, max=3, value=2, step=1),
-                            sliderInput("calc_hard_pct","% Laps on Medium/Hard Tyres", min=0, max=100, value=60, step=5, post="%")
+               tags$div(style="display:flex; align-items:stretch; margin-bottom:15px;",
+                        tags$div(style="width:35%; padding-right:15px; box-sizing:border-box;",
+                                 div(class="control-panel", style="height:100%; box-sizing:border-box;",
+                                     div(class="panel-title", style="font-size:16px;text-transform:uppercase;", "Live Score Calculator"),
+                                     hr(class="f1-divider"),
+                                     div(style="font-size:11px;color:#888;margin-bottom:18px;",
+                                         "Adjust the inputs to see how a strategy would be scored."),
+                                     sliderInput("calc_stops","Number of Pit Stops", min=1, max=4, value=2, step=1, width="100%"),
+                                     sliderInput("calc_min_stops","Minimum Stops in Race", min=1, max=4, value=2, step=1, width="100%"),
+                                     sliderInput("calc_sc_hit","SC Windows Used (out of total)", min=0, max=3, value=1, step=1, width="100%"),
+                                     sliderInput("calc_sc_total","Total SC Windows in Race", min=0, max=3, value=2, step=1, width="100%"),
+                                     sliderInput("calc_hard_pct","% Laps on Medium/Hard Tyres", min=0, max=100, value=60, step=5, post="%", width="100%")
+                                 )
+                        ),
+                        tags$div(style="width:65%; box-sizing:border-box;",
+                                 div(class="plot-panel", style="height:100%; box-sizing:border-box;",
+                                     div(class="panel-title", style="font-size:16px;text-transform:uppercase;", "Calculated Score"),
+                                     hr(class="f1-divider"),
+                                     uiOutput("calc_score_display"),
+                                     withSpinner(plotlyOutput("calc_score_plot", height="430px"),
+                                                 type=4, color="#e10600", size=0.7)
+                                 )
                         )
-                 ),
-                 column(7,
-                        div(class="plot-panel", style="margin-bottom:15px;",
-                            h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;","Calculated Score"),
-                            hr(class="f1-divider"),
-                            uiOutput("calc_score_display"),
-                            withSpinner(plotlyOutput("calc_score_plot", height="260px"),
-                                        type=4, color="#e10600", size=0.7)
-                        )
-                 )
                ),
                
-               # Worked example
                fluidRow(
                  column(12,
                         div(class="plot-panel",
-                            h6(style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;",
-                               "Worked Example \u2014 2023 Bahrain GP"),
+                            div(class="panel-title", style="font-size:16px;text-transform:uppercase;", "Worked Example \u2014 2023 Bahrain GP"),
                             hr(class="f1-divider"),
                             div(style="font-size:12px;color:#666;margin-bottom:15px;",
                                 "Verstappen vs Sargeant \u2014 same race, very different strategic outcomes."),
+                            div(style="display:inline-flex;align-items:center;gap:16px;border:1px solid #1a1a1a;padding:5px 12px;background:#fff;margin-bottom:10px;font-size:12px;font-family:'Helvetica Neue',sans-serif;",
+                                tags$span(style="font-weight:700;margin-right:4px;","Component"),
+                                tags$span(
+                                  tags$span(style="display:inline-block;width:12px;height:12px;background:#3671C6;vertical-align:middle;margin-right:4px;"),
+                                  tags$span(style="vertical-align:middle;font-size:12px;font-weight:700;","Tyre Strategy")
+                                ),
+                                tags$span(
+                                  tags$span(style="display:inline-block;width:12px;height:12px;background:#e10600;vertical-align:middle;margin-right:4px;"),
+                                  tags$span(style="vertical-align:middle;font-size:12px;font-weight:700;","Stop Efficiency")
+                                ),
+                                tags$span(
+                                  tags$span(style="display:inline-block;width:12px;height:12px;background:#FFC906;vertical-align:middle;margin-right:4px;"),
+                                  tags$span(style="vertical-align:middle;font-size:12px;font-weight:700;","SC Utilisation")
+                                )
+                            ),
                             withSpinner(plotlyOutput("worked_example_plot", height="280px"),
                                         type=4, color="#e10600", size=0.7)
                         )
@@ -523,15 +538,14 @@ ui <- navbarPage(
 ) # /navbarPage
 
 
+# ── PRE-LOAD default race data at app startup (global — runs once, not per session) ──
+message("Pre-loading 2023 Round 1 data...")
+.preload_laps <- tryCatch(get_lap_data_cached(2023, 1), error = function(e) NULL)
+.preload_pits <- tryCatch(get_pitstop_data_cached(2023, 1), error = function(e) NULL)
+message("Pre-load complete.")
+
 # ── SERVER ────────────────────────────────────────────────────────────────────
 server <- function(input, output, session) {
-  
-  isolate({
-    tryCatch({
-      get_lap_data_cached(2023, 1)
-      get_pitstop_data_cached(2023, 1)
-    }, error = function(e) NULL)
-  })
   
   output$sm_race_selector <- renderUI({
     req(input$sm_season)
@@ -554,29 +568,40 @@ server <- function(input, output, session) {
     selectInput("ss_round", "Race", choices = choices, selected = choices[1])
   })
   
-  # ── Panel 1 ────────────────────────────────────────────────────────────────
+  # ── Panel 1 ──────────────────────────────────────────────────────────────
+  sm_round_val <- reactive({
+    if (is.null(input$sm_round) || !nzchar(as.character(input$sm_round))) 1L
+    else as.numeric(input$sm_round)
+  })
+  
   sm_lap_data <- reactive({
-    req(input$sm_season, input$sm_round)
-    tryCatch(get_lap_data_cached(as.numeric(input$sm_season), as.numeric(input$sm_round)),
+    req(input$sm_season)
+    r <- sm_round_val()
+    if (as.numeric(input$sm_season) == 2023 && r == 1 && !is.null(.preload_laps))
+      return(.preload_laps)
+    tryCatch(get_lap_data_cached(as.numeric(input$sm_season), r),
              error = function(e) NULL)
   })
   
   sm_pit_data <- reactive({
-    req(input$sm_season, input$sm_round)
-    tryCatch(get_pitstop_data_cached(as.numeric(input$sm_season), as.numeric(input$sm_round)),
+    req(input$sm_season)
+    r <- sm_round_val()
+    if (as.numeric(input$sm_season) == 2023 && r == 1 && !is.null(.preload_pits))
+      return(.preload_pits)
+    tryCatch(get_pitstop_data_cached(as.numeric(input$sm_season), r),
              error = function(e) NULL)
   })
   
   output$strategy_map_plot <- renderPlotly({
-    req(input$sm_round)
     laps <- sm_lap_data()
     pits <- sm_pit_data()
     req(!is.null(laps), !is.null(pits), nrow(laps) > 0)
     plot_strategy_map(laps, pits, input$sm_drivers,
-                      season = input$sm_season, round = input$sm_round)
+                      season = input$sm_season, round = sm_round_val())
   })
+  outputOptions(output, "strategy_map_plot", suspendWhenHidden = FALSE)
   
-  # ── Panel 2 ────────────────────────────────────────────────────────────────
+  # ── Panel 2 ──────────────────────────────────────────────────────────────
   ud_lap_data <- reactive({
     req(input$ud_season, input$ud_round)
     tryCatch(get_lap_data_cached(as.numeric(input$ud_season), as.numeric(input$ud_round)),
@@ -637,7 +662,7 @@ server <- function(input, output, session) {
     plot_undercut_bar(ud_undercuts())
   })
   
-  # ── Panel 3 ────────────────────────────────────────────────────────────────
+  # ── Panel 3 ──────────────────────────────────────────────────────────────
   sc_data <- reactiveValues(timeline = NULL, pits = NULL)
   
   observeEvent(input$sc_season, {
@@ -672,7 +697,7 @@ server <- function(input, output, session) {
     plot_sc_winners_losers(sc_data$pits)
   })
   
-  # ── Panel 4 ────────────────────────────────────────────────────────────────
+  # ── Panel 4 ──────────────────────────────────────────────────────────────
   ss_lap_data <- reactive({
     s <- input$ss_season; r <- input$ss_round
     if (is.null(s) || is.null(r) || !nzchar(as.character(r))) return(NULL)
@@ -767,7 +792,7 @@ server <- function(input, output, session) {
     plot_strategy_league(data)
   })
   
-  # ── Panel 5: Score Explained ───────────────────────────────────────────────
+  # ── Panel 5: Score Explained ──────────────────────────────────────────────
   calc_scores <- reactive({
     extra  <- max(0, input$calc_stops - input$calc_min_stops)
     stop_s <- max(0, 40 - extra * 10)
@@ -802,23 +827,32 @@ server <- function(input, output, session) {
   output$calc_score_plot <- renderPlotly({
     s <- calc_scores()
     df <- data.frame(
-      component = c("Stop Efficiency","SC Utilisation","Tyre Strategy"),
+      component = c("<b>Stop Efficiency</b>","<b>SC Utilisation</b>","<b>Tyre Strategy</b>"),
       score     = c(s$stop, s$sc, s$tyre),
       max_score = c(40, 35, 25),
       colour    = c("#e10600","#FFC906","#3671C6")
     )
     plotly::plot_ly(df, x=~score, y=~component, type="bar", orientation="h",
                     marker=list(color=~colour),
-                    text=~paste0(score," / ",max_score), textposition="outside",
+                    text=~paste0("<b>", score," / ",max_score, "</b>"), textposition="outside",
                     hoverinfo="none"
     ) %>%
       plotly::layout(
-        xaxis=list(title="", range=c(0,55), fixedrange=TRUE, gridcolor="#eeeeee",
-                   tickfont=list(size=11, family="Helvetica Neue", bold=TRUE)),
-        yaxis=list(title="", fixedrange=TRUE, automargin=TRUE,
-                   tickfont=list(size=12, family="Helvetica Neue", color="#1a1a1a", bold=TRUE)),
+        xaxis=list(
+          title=list(text="<b>Strategy Score</b>", font=list(size=12, color="#1a1a1a")),
+          range=c(0,60), fixedrange=TRUE, gridcolor="#eeeeee",
+          tickmode="array",
+          tickvals=c(0,10,20,30,40,50,60),
+          ticktext=c("<b>0</b>","<b>10</b>","<b>20</b>","<b>30</b>","<b>40</b>","<b>50</b>","<b>60</b>"),
+          tickfont=list(size=11, family="Helvetica Neue", color="#1a1a1a")
+        ),
+        yaxis=list(
+          title="", fixedrange=TRUE, automargin=TRUE,
+          tickfont=list(size=12, family="Helvetica Neue", color="#1a1a1a", bold=TRUE),
+          ticksuffix="   "
+        ),
         paper_bgcolor="#ffffff", plot_bgcolor="#fafafa",
-        margin=list(l=10, r=80, t=10, b=20),
+        margin=list(l=10, r=90, t=30, b=40),
         showlegend=FALSE
       ) %>%
       plotly::config(displayModeBar=FALSE)
@@ -826,33 +860,44 @@ server <- function(input, output, session) {
   
   output$worked_example_plot <- renderPlotly({
     df <- data.frame(
-      driver    = rep(c("Max Verstappen","Logan Sargeant"), each=3),
-      component = rep(c("Stop Efficiency","SC Utilisation","Tyre Strategy"), 2),
+      driver    = rep(c("<b>Max Verstappen</b>","<b>Logan Sargeant</b>"), each=3),
+      component = rep(c("<b>Stop Efficiency</b>","<b>SC Utilisation</b>","<b>Tyre Strategy</b>"), 2),
       score     = c(40, 35, 19, 20, 0, 6)
     )
     plotly::plot_ly(df, x=~score, y=~driver, color=~component,
                     type="bar", orientation="h",
-                    colors=c("Stop Efficiency"="#e10600","SC Utilisation"="#FFC906","Tyre Strategy"="#3671C6"),
-                    text=~score, textposition="inside",
+                    colors=c("<b>Stop Efficiency</b>"="#e10600","<b>SC Utilisation</b>"="#FFC906","<b>Tyre Strategy</b>"="#3671C6"),
+                    text=~paste0("<b>",score,"</b>"), textposition="inside",
+                    insidetextanchor="middle",
+                    textfont=list(size=14, family="Helvetica Neue", color="#ffffff"),
                     hovertemplate="<b>%{y}</b><br>%{fullData.name}: %{x} pts<extra></extra>"
     ) %>%
       plotly::layout(
         barmode="stack",
-        xaxis=list(title=list(text="<b>Strategy Score</b>"),
-                   range=c(0,115), fixedrange=TRUE, gridcolor="#eeeeee",
-                   tickfont=list(size=11, family="Helvetica Neue", bold=TRUE)),
-        yaxis=list(title="", fixedrange=TRUE, automargin=TRUE,
-                   tickfont=list(size=12, family="Helvetica Neue", color="#1a1a1a", bold=TRUE)),
-        legend=list(orientation="h", x=0, y=1.2),
+        xaxis=list(
+          title=list(text="<b>Strategy Score</b>", font=list(size=13, family="Helvetica Neue", color="#1a1a1a")),
+          range=c(0,115), fixedrange=TRUE, gridcolor="#eeeeee",
+          tickmode="array",
+          tickvals=c(0,20,40,60,80,100),
+          ticktext=c("<b>0</b>","<b>20</b>","<b>40</b>","<b>60</b>","<b>80</b>","<b>100</b>"),
+          tickfont=list(size=12, family="Helvetica Neue", color="#1a1a1a")
+        ),
+        yaxis=list(
+          title="", fixedrange=TRUE, automargin=TRUE,
+          tickfont=list(size=13, family="Helvetica Neue", color="#1a1a1a", bold=TRUE),
+          ticksuffix="   ",
+          tickprefix="   "
+        ),
+        showlegend=FALSE,
         paper_bgcolor="#ffffff", plot_bgcolor="#fafafa",
-        margin=list(l=10, r=30, t=50, b=50),
+        margin=list(l=20, r=30, t=20, b=60),
         annotations=list(
-          list(x=94, y="Max Verstappen", text="<b>Total: 94</b>",
+          list(x=96, y="<b>Max Verstappen</b>", text="<b>Total: 94</b>",
                xanchor="left", yanchor="middle", showarrow=FALSE,
-               font=list(size=12, color="#1a1a1a")),
-          list(x=26, y="Logan Sargeant", text="<b>Total: 26</b>",
+               font=list(size=13, color="#1a1a1a", family="Helvetica Neue")),
+          list(x=28, y="<b>Logan Sargeant</b>", text="<b>Total: 26</b>",
                xanchor="left", yanchor="middle", showarrow=FALSE,
-               font=list(size=12, color="#1a1a1a"))
+               font=list(size=13, color="#1a1a1a", family="Helvetica Neue"))
         )
       ) %>%
       plotly::config(displayModeBar=FALSE)
