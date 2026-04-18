@@ -235,7 +235,7 @@ ui <- navbarPage(
                    column(4,
                           div(class="preview-box",
                               h6("Panel 4"),
-                              div(class="preview-title","Optimal vs Reality"),
+                              div(class="preview-title","Strategy Score"),
                               div(class="preview-desc",
                                   "Scores every driver\u2019s strategy on stop efficiency, SC utilisation, and tyre management. Builds a season-long league table."
                               ),
