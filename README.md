@@ -37,11 +37,11 @@ A full season of SC and VSC deployments on one page. Who pitted. Who stayed out.
 
 ![Safety Car Lottery](images/safety-car.png)
 
-### Optimal vs Reality
+### Strategy Score
 
 Our original Strategy Score out of 100. Builds into a season long league table so you can see who's actually winning races with their head and who's winning them with their car.
 
-![Optimal vs Reality](images/strategy-score.png)
+![Strategy Score](images/strategy-score.png)
 
 ### Score Explained
 
