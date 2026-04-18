@@ -4,14 +4,48 @@
 library(plotly)
 library(dplyr)
 
+# ── Helper: friendly empty plot for missing data ─────────────────────────────
+empty_plot_message <- function(message = "No data available for this race") {
+  plotly::plot_ly() %>%
+    plotly::layout(
+      xaxis = list(visible = FALSE, fixedrange = TRUE),
+      yaxis = list(visible = FALSE, fixedrange = TRUE),
+      paper_bgcolor = "#ffffff",
+      plot_bgcolor  = "#fafafa",
+      annotations = list(
+        list(
+          text      = message,
+          x         = 0.5, y = 0.5,
+          xref      = "paper", yref = "paper",
+          showarrow = FALSE,
+          font      = list(size = 14, color = "#999999", family = "Helvetica Neue")
+        )
+      )
+    ) %>%
+    plotly::config(displayModeBar = FALSE)
+}
+
 plot_strategy_map <- function(lap_data, pit_data, driver_filter = "all",
                               season = NULL, round = NULL) {
+  
+  # ── Defensive guards: don't crash on missing data ─────────────────────────
+  if (is.null(lap_data) || nrow(lap_data) == 0) {
+    return(empty_plot_message(
+      "Lap data not available for this race yet. Try another race or rebuild the cache."
+    ))
+  }
+  if (is.null(pit_data)) pit_data <- data.frame()
   
   lap_data <- lap_data %>%
     filter(!is.na(driver), driver != "NA", driver != "") %>%
     mutate(compound = toupper(compound)) %>%
     mutate(compound = ifelse(is.na(compound) | compound == "NA" | compound == "", "UNKNOWN", compound)) %>%
     mutate(driver_label = ifelse(driver %in% names(DRIVER_NAMES), DRIVER_NAMES[driver], driver))
+  
+  # Second guard in case the above filter emptied it out
+  if (nrow(lap_data) == 0) {
+    return(empty_plot_message("No valid lap data for this race"))
+  }
   
   race_last_lap <- max(lap_data$lap_number, na.rm = TRUE)
   
@@ -49,7 +83,7 @@ plot_strategy_map <- function(lap_data, pit_data, driver_filter = "all",
   if (driver_filter == "top10") {
     top10_drivers      <- driver_order_df %>% arrange(best_pos) %>% slice(1:10) %>% pull(driver)
     lap_data           <- lap_data %>% filter(driver %in% top10_drivers)
-    pit_data           <- pit_data %>% filter(toupper(driver_id) %in% toupper(top10_drivers))
+    pit_data           <- if (nrow(pit_data) > 0) pit_data %>% filter(toupper(driver_id) %in% toupper(top10_drivers)) else pit_data
     dnf_tiles          <- if (nrow(dnf_tiles) > 0) dnf_tiles %>% filter(driver %in% top10_drivers) else dnf_tiles
     driver_label_order <- driver_label_order[driver_order %in% top10_drivers]
     driver_order       <- driver_order[driver_order %in% top10_drivers]
@@ -180,19 +214,18 @@ plot_strategy_map <- function(lap_data, pit_data, driver_filter = "all",
       mutate(driver_upper = toupper(driver_id)) %>%
       filter(driver_upper %in% toupper(driver_order))
     
-    p <- p + ggplot2::geom_vline(
-      data = pit_data,
-      ggplot2::aes(xintercept = as.numeric(lap)),
-      colour = "#1a1a1a", linewidth = 0.5, alpha = 0.7, linetype = "dashed"
-    )
+    if (nrow(pit_data) > 0) {
+      p <- p + ggplot2::geom_vline(
+        data = pit_data,
+        ggplot2::aes(xintercept = as.numeric(lap)),
+        colour = "#1a1a1a", linewidth = 0.5, alpha = 0.7, linetype = "dashed"
+      )
+    }
   }
   
   is_belgian_2021 <- !is.null(season) && !is.null(round) &&
     as.numeric(season) == 2021 && as.numeric(round) == 12
   
-  # ── KEY FIX: bold + spacing via tickmode="array" with HTML <b> tags ──────
-  # tickvals = numeric positions (1..n) matching the factor level order after ggplotly
-  # ticktext = HTML <b>Name</b> + trailing spaces for gap from plot border
   n_drivers     <- length(driver_label_order)
   bold_labels   <- paste0("<b>", driver_label_order, "</b>    ")
   

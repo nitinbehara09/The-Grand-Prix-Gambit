@@ -5,8 +5,7 @@ library(f1dataR)
 library(dplyr)
 
 # ── Python / FastF1 setup ────────────────────────────────────────────────────
-# FIX: use reticulate::py_config() instead of system("which python3") which
-#      fails on Windows and RStudio Server
+# FIX: use portable cache path so this works on any machine, not just Nitin's Mac
 tryCatch({
   python_path <- reticulate::py_config()$python
   if (!is.null(python_path) && nzchar(python_path)) {
@@ -23,9 +22,6 @@ tryCatch({
 dir.create("data/cache", recursive = TRUE, showWarnings = FALSE)
 
 # ── CENTRALISED LOOKUP TABLES ────────────────────────────────────────────────
-# FIX: All lookup tables live here once. Removed duplicate definitions from
-#      strategy_map.R, safety_car.R, strategy_score.R, undercut_detector.R.
-
 DRIVER_NAMES <- c(
   "VER" = "Max Verstappen",    "HAM" = "Lewis Hamilton",
   "LEC" = "Charles Leclerc",   "SAI" = "Carlos Sainz",
@@ -52,7 +48,6 @@ DRIVER_NAMES <- c(
   "BUT" = "Jenson Button"
 )
 
-# Single source of truth for driver ID normalisation (last name & full name → 3-letter code)
 LOCAL_DRIVER_IDS <- c(
   "verstappen" = "VER", "hamilton" = "HAM", "leclerc" = "LEC",
   "sainz" = "SAI", "perez" = "PER", "russell" = "RUS",
@@ -69,7 +64,6 @@ LOCAL_DRIVER_IDS <- c(
   "kubica" = "KUB", "fittipaldi" = "FIT", "aitken" = "AIT",
   "hadjar" = "HAD", "antonelli" = "ANT", "doohan" = "DOO",
   "bortoleto" = "BOR", "shwartzman" = "SHW",
-  # Full name format (used in 2021/2022 pit data)
   "max_verstappen" = "VER", "lewis_hamilton" = "HAM",
   "charles_leclerc" = "LEC", "carlos_sainz" = "SAI",
   "sergio_perez" = "PER", "george_russell" = "RUS",
@@ -97,13 +91,11 @@ LOCAL_DRIVER_IDS <- c(
 # ── Data fetching ─────────────────────────────────────────────────────────────
 get_schedule <- function(season) {
   sched <- load_schedule(season = season)
-  # Normalize column name variations across f1dataR versions
   if (!"race_name" %in% names(sched)) {
     for (alt in c("raceName", "name", "race")) {
       if (alt %in% names(sched)) { sched <- dplyr::rename(sched, race_name = !!dplyr::sym(alt)); break }
     }
   }
-  # Filter: proper race rounds only — removes pre-season tests (round NA / 0)
   sched %>%
     dplyr::filter(!is.na(round), as.integer(round) > 0,
                   !is.na(race_name), nzchar(as.character(race_name))) %>%
@@ -133,7 +125,6 @@ get_results <- function(season, round) {
   )
 }
 
-# ── Helper: normalise pit stop driver IDs ─────────────────────────────────────
 normalize_pit_ids <- function(pit_data) {
   if (is.null(pit_data) || nrow(pit_data) == 0) return(pit_data)
   pit_data %>%
@@ -150,8 +141,6 @@ get_lap_data_cached <- function(season, round) {
   if (file.exists(cache_path)) {
     tryCatch(return(readRDS(cache_path)), error = function(e) NULL)
   }
-  # FIX: wrap fetch in tryCatch — FastF1 API timeouts or uncached races
-  # can throw errors that previously propagated all the way to the stat boxes.
   laps <- tryCatch(get_lap_data(season, round), error = function(e) {
     message("lap data unavailable for season=", season, " round=", round, ": ", e$message)
     NULL
@@ -177,6 +166,7 @@ get_sc_cached <- function(season, round, race_name) {
   cache_path <- paste0("data/cache/sc_", season, "_", round, ".rds")
   if (file.exists(cache_path)) return(readRDS(cache_path))
   laps <- get_lap_data_cached(season, round)
+  if (is.null(laps) || nrow(laps) == 0) return(data.frame())
   sc   <- detect_safety_cars(laps, season, round, race_name)
   saveRDS(sc, cache_path)
   sc
@@ -191,4 +181,25 @@ get_sc_pits_cached <- function(season, round, race_name) {
   analysis <- if (!is.null(sc) && nrow(sc) > 0) sc_pit_analysis(laps, pits, sc) else data.frame()
   saveRDS(analysis, cache_path)
   analysis
+}
+
+# ── Cache builder helper ─────────────────────────────────────────────────────
+# Run this from the console to fetch and cache any missing races
+# Example: build_cache(2021, c(11, 13, 14, 15, 16, 17, 18, 19, 20, 22))
+build_cache <- function(season, rounds) {
+  sched <- tryCatch(get_schedule(season), error = function(e) NULL)
+  for (rnd in rounds) {
+    cat("Fetching", season, "Round", rnd, "... ")
+    race_name <- if (!is.null(sched)) {
+      as.character(sched$race_name[as.integer(sched$round) == rnd])[1]
+    } else paste("Round", rnd)
+    tryCatch({
+      get_lap_data_cached(season, rnd)
+      get_pitstop_data_cached(season, rnd)
+      get_sc_cached(season, rnd, race_name)
+      get_sc_pits_cached(season, rnd, race_name)
+      cat("done\n")
+    }, error = function(e) cat("FAILED:", e$message, "\n"))
+  }
+  invisible(NULL)
 }
