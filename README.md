@@ -45,6 +45,8 @@ Our original Strategy Score out of 100. Builds into a season long league table s
 
 An interactive calculator. Slide the inputs. See what a 94 looks like. See what a 26 looks like. Spoiler, Sargeant isn't winning this one.
 
+![Score Explained](images/score-explained.png)
+
 ## The Strategy Score
 
 Three components. 100 points total.
