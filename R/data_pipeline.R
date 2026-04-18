@@ -12,9 +12,10 @@ tryCatch({
   if (!is.null(python_path) && nzchar(python_path)) {
     Sys.setenv(RETICULATE_PYTHON = python_path)
   }
-  dir.create("~/Library/Caches/fastf1", recursive = TRUE, showWarnings = FALSE)
+  cache_path <- path.expand("~/Library/Caches/fastf1")
+  dir.create(cache_path, recursive = TRUE, showWarnings = FALSE)
   reticulate::py_run_string(
-    "import fastf1; fastf1.Cache.enable_cache('/Users/febuxostat/Library/Caches/fastf1')"
+    sprintf("import fastf1; fastf1.Cache.enable_cache('%s')", cache_path)
   )
 }, error = function(e) NULL)
 
