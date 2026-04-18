@@ -5,18 +5,26 @@ library(f1dataR)
 library(dplyr)
 
 # ── Python / FastF1 setup ────────────────────────────────────────────────────
-# FIX: use portable cache path so this works on any machine, not just Nitin's Mac
-tryCatch({
-  python_path <- reticulate::py_config()$python
-  if (!is.null(python_path) && nzchar(python_path)) {
-    Sys.setenv(RETICULATE_PYTHON = python_path)
-  }
-  cache_path <- path.expand("~/Library/Caches/fastf1")
-  dir.create(cache_path, recursive = TRUE, showWarnings = FALSE)
-  reticulate::py_run_string(
-    sprintf("import fastf1; fastf1.Cache.enable_cache('%s')", cache_path)
-  )
-}, error = function(e) NULL)
+# Only runs locally. On shinyapps.io we skip this because we only read cached
+# RDS files anyway, and Python setup is unreliable on the server.
+is_shinyapps <- nzchar(Sys.getenv("SHINY_SERVER_VERSION")) ||
+  grepl("shinyapps", Sys.getenv("R_CONFIG_ACTIVE"), ignore.case = TRUE)
+
+if (!is_shinyapps) {
+  tryCatch({
+    if (requireNamespace("reticulate", quietly = TRUE)) {
+      python_path <- reticulate::py_config()$python
+      if (!is.null(python_path) && nzchar(python_path)) {
+        Sys.setenv(RETICULATE_PYTHON = python_path)
+      }
+      cache_path <- path.expand("~/Library/Caches/fastf1")
+      dir.create(cache_path, recursive = TRUE, showWarnings = FALSE)
+      reticulate::py_run_string(
+        sprintf("import fastf1; fastf1.Cache.enable_cache('%s')", cache_path)
+      )
+    }
+  }, error = function(e) NULL)
+}
 
 # Create local RDS cache folder
 dir.create("data/cache", recursive = TRUE, showWarnings = FALSE)
