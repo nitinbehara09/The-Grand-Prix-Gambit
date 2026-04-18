@@ -203,7 +203,7 @@ plot_sc_winners_losers <- function(pit_analysis_data) {
     type        = "table",
     columnwidth = c(260, 90, 110, 90),   # wider Driver col; Stayed Out needs room
     header = list(
-      values = c("<b>Driver</b>", "<b>SC Pits</b>", "<b>Stayed Out</b>", "<b>Net Score</b>"),
+      values = c("<b>Driver</b>", "<b>SC Stops Taken</b>", "<b>SC Stops Missed</b>", "<b>Net Gain</b>"),
       fill   = list(color = "#1a1a1a"),
       font   = list(color = "white", size = 12, family = "Helvetica Neue"),
       align  = c("center", "center", "center", "center"),
