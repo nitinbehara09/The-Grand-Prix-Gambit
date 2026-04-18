@@ -2,6 +2,8 @@
 
 > The race is won in the pit lane. You just don't see it.
 
+**[→ Open the live dashboard](https://datasentinels.shinyapps.io/grand-prix-gambit/)**
+
 An R Shiny dashboard that pulls apart every pit stop from the 2021, 2022 and 2023 F1 seasons and asks the one question nobody bothers to ask after the chequered flag. Was that smart strategy or just good luck?
 
 ![The Grand Prix Gambit dashboard](images/home.png)
@@ -59,14 +61,12 @@ Three components. 100 points total.
 
 ## Stack
 
-Built in R. Everything Shiny. Static visuals in ggplot2, anything hoverable in plotly. Data comes from the `f1dataR` package, which wraps FastF1 so no API keys and no paywalls.
+Built in R. Everything Shiny. Static visuals in ggplot2, anything hoverable in plotly. Data comes from the f1dataR package, which wraps FastF1 so no API keys and no paywalls.
 
-```
-shiny · shinydashboard · shinycssloaders
-ggplot2 · plotly
-dplyr · tidyr
-f1dataR · reticulate
-```
+- shiny, shinydashboard, shinycssloaders
+- ggplot2, plotly
+- dplyr, tidyr
+- f1dataR, reticulate
 
 ## The data
 
@@ -74,43 +74,39 @@ Three seasons. 64 races. 32 variables per lap. Over 1,000 rows per race.
 
 We picked 2021 to 2023 because tyre compound data is clean and consistent across all three. That's the foundation every panel is built on.
 
-Race data is cached locally in `data/cache/` as RDS files so repeat loads don't hit the API every time.
+Race data is cached locally in data/cache as RDS files so repeat loads don't hit the API every time.
 
-## Running it
+## Running it locally
 
-```bash
-git clone https://github.com/nitinbehara09/The-Grand-Prix-Gambit.git
-```
+The live dashboard is the easy way. But if you want to run it yourself, clone the repo:
 
-Open `grand-prix-gambit.Rproj` in RStudio. Then:
+    git clone https://github.com/nitinbehara09/The-Grand-Prix-Gambit.git
 
-```r
-install.packages(c(
-  "shiny", "shinydashboard", "shinycssloaders",
-  "ggplot2", "plotly", "dplyr", "tidyr",
-  "f1dataR", "reticulate"
-))
+Open grand-prix-gambit.Rproj in RStudio. Then in the R console:
 
-shiny::runApp("app.R")
-```
+    install.packages(c(
+      "shiny", "shinydashboard", "shinycssloaders",
+      "ggplot2", "plotly", "dplyr", "tidyr",
+      "f1dataR", "reticulate"
+    ))
 
-You'll also need Python with the `fastf1` package. reticulate handles the bridge.
+    shiny::runApp("app.R")
+
+You'll need Python with the fastf1 package only if you want to fetch new race data. The cached races work without Python.
 
 ## Project structure
 
-```
-The-Grand-Prix-Gambit/
-├── app.R                     # UI + server
-├── R/
-│   ├── data_pipeline.R       # Fetching, caching, lookups
-│   ├── strategy_map.R        # Panel 1
-│   ├── undercut_detector.R   # Panel 2
-│   ├── safety_car.R          # Panel 3
-│   └── strategy_score.R      # Panel 4
-├── images/                   # Dashboard screenshots
-├── data/cache/               # Local RDS cache
-└── grand-prix-gambit.Rproj
-```
+    The-Grand-Prix-Gambit/
+    app.R                     UI and server
+    R/
+      data_pipeline.R         Fetching, caching, lookups
+      strategy_map.R          Panel 1
+      undercut_detector.R     Panel 2
+      safety_car.R            Panel 3
+      strategy_score.R        Panel 4
+    images/                   Dashboard screenshots
+    data/cache/               Local RDS cache
+    grand-prix-gambit.Rproj
 
 ## Context
 
